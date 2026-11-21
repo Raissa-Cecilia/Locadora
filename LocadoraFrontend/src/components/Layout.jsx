@@ -1,8 +1,8 @@
-﻿import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function Layout({ children }) {
   return (
-    <div>
+    <div className="app-shell">
       <nav className="navbar navbar-expand-lg navbar-dark barra-topo">
         <div className="container conteudo-principal">
           <NavLink className="navbar-brand" to="/">Locadora de Veículos</NavLink>
@@ -23,9 +23,14 @@ function Layout({ children }) {
           </div>
         </div>
       </nav>
+
       <main className="container conteudo-principal py-4">{children}</main>
-      <footer className="container conteudo-principal pb-4 rodape">
-        Sistema de locadora com cadastros, aluguéis, relatórios e carteira.
+
+      <footer className="rodape">
+        <div className="rodape-conteudo">
+          <span>Sistema de locadora com cadastros, aluguéis, relatórios e carteira.</span>
+          <span className="rodape-destaque">Desenvolvido por Raissa Matos - Faculdade PUC Minas</span>
+        </div>
       </footer>
     </div>
   );
