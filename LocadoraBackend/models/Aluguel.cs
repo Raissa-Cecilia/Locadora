@@ -22,7 +22,9 @@ namespace LocadoraBackend.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal? ValorTotal { get; set; }
 
-      
+        public bool Pago { get; set; } = false;
+        public DateTime? DataPagamento { get; set; }
+
         public int ClienteId { get; set; }
         [ForeignKey("ClienteId")]
         public Cliente? Cliente { get; set; }

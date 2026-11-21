@@ -1,73 +1,50 @@
 ﻿import { useEffect, useState } from "react";
-import { apiGet } from "../services/api";
-import { clientesExemplo } from "../dados/dadosExemplo";
-
-function lerSaldos() {
-  const salvo = localStorage.getItem("saldosClientes");
-  if (salvo) {
-    return JSON.parse(salvo);
-  }
-  const inicial = {};
-  clientesExemplo.forEach((c) => {
-    inicial[c.id] = c.saldo;
-  });
-  localStorage.setItem("saldosClientes", JSON.stringify(inicial));
-  return inicial;
-}
-
-function lerPagamentos() {
-  const salvo = localStorage.getItem("pagamentosAlugueis");
-  if (salvo) {
-    return JSON.parse(salvo);
-  }
-  return [];
-}
+import { apiGet, apiPost } from "../services/api";
 
 function Carteira() {
   const [clientes, setClientes] = useState([]);
   const [alugueis, setAlugueis] = useState([]);
   const [clienteSelecionado, setClienteSelecionado] = useState("");
   const [valorRecarga, setValorRecarga] = useState("");
-  const [saldos, setSaldos] = useState({});
-  const [pagamentos, setPagamentos] = useState([]);
   const [mensagem, setMensagem] = useState("");
 
-  async function carregarDados() {
+  async function carregarClientes() {
     try {
-      const [listaClientes, listaAlugueis] = await Promise.all([
-        apiGet("/Clientes"),
-        apiGet("/Alugueis")
-      ]);
+      const listaClientes = await apiGet("/Clientes");
       setClientes(listaClientes);
+      return listaClientes;
+    } catch (erro) {
+      setMensagem("Não foi possível carregar os clientes. Verifique se a API está em execução e o banco atualizado.");
+      return [];
+    }
+  }
+
+  async function carregarAlugueis() {
+    try {
+      const listaAlugueis = await apiGet("/Alugueis");
       setAlugueis(listaAlugueis);
     } catch (erro) {
-      setMensagem("Não foi possível carregar dados da API. Exibindo opções de exemplo para demonstração.");
-      setClientes(clientesExemplo.map((c) => ({ id: c.id, nome: c.nome, cpf: c.cpf, email: c.email })));
+      setMensagem("Não foi possível carregar os aluguéis. Verifique se a API está em execução e o banco atualizado.");
+    }
+  }
+
+  async function carregarDados() {
+    const listaClientes = await carregarClientes();
+    await carregarAlugueis();
+    if (!clienteSelecionado && listaClientes.length > 0) {
+      setClienteSelecionado(String(listaClientes[0].id));
     }
   }
 
   useEffect(() => {
-    setSaldos(lerSaldos());
-    setPagamentos(lerPagamentos());
     carregarDados();
   }, []);
 
-  function salvarSaldos(novosSaldos) {
-    setSaldos(novosSaldos);
-    localStorage.setItem("saldosClientes", JSON.stringify(novosSaldos));
-  }
+  const clienteAtual = clientes.find((c) => String(c.id) === String(clienteSelecionado));
+  const saldoAtual = clienteAtual ? Number(clienteAtual.saldo || 0) : 0;
+  const alugueisDoCliente = alugueis.filter((a) => String(a.clienteId) === String(clienteSelecionado));
 
-  function salvarPagamentos(novosPagamentos) {
-    setPagamentos(novosPagamentos);
-    localStorage.setItem("pagamentosAlugueis", JSON.stringify(novosPagamentos));
-  }
-
-  function obterSaldo(idCliente) {
-    if (!idCliente) return 0;
-    return Number(saldos[idCliente] || 0);
-  }
-
-  function recarregarSaldo() {
+  async function recarregarSaldo() {
     if (!clienteSelecionado) {
       setMensagem("Selecione um cliente para recarregar.");
       return;
@@ -77,47 +54,49 @@ function Carteira() {
       setMensagem("Informe um valor de recarga válido.");
       return;
     }
-    const saldoAtual = obterSaldo(clienteSelecionado);
-    const novosSaldos = { ...saldos, [clienteSelecionado]: saldoAtual + valor };
-    salvarSaldos(novosSaldos);
-    setValorRecarga("");
-    setMensagem("Recarga realizada com sucesso.");
+
+    try {
+      await apiPost("/Carteira/recarga", {
+        clienteId: Number(clienteSelecionado),
+        valor: valor
+      });
+      setValorRecarga("");
+      setMensagem("Recarga realizada com sucesso.");
+      await carregarClientes();
+    } catch (erro) {
+      setMensagem("Erro ao recarregar saldo. Verifique se o banco foi atualizado com a migration da carteira.");
+    }
   }
 
-  function pagarAluguel(aluguel) {
+  async function pagarAluguel(aluguelId) {
     if (!clienteSelecionado) {
       setMensagem("Selecione um cliente para realizar o pagamento.");
       return;
     }
-    if (pagamentos.includes(aluguel.id)) {
-      setMensagem("Este aluguel já foi pago.");
-      return;
+
+    try {
+      await apiPost("/Carteira/pagamento", {
+        clienteId: Number(clienteSelecionado),
+        aluguelId: Number(aluguelId)
+      });
+      setMensagem("Pagamento realizado com sucesso.");
+      await carregarClientes();
+      await carregarAlugueis();
+    } catch (erro) {
+      setMensagem("Erro ao realizar pagamento. Verifique o saldo, o valor do aluguel e se o banco foi atualizado.");
     }
-    const valor = Number(aluguel.valorTotal || 0);
-    if (valor <= 0) {
-      setMensagem("Este aluguel não possui valor total para pagamento.");
-      return;
-    }
-    const saldoAtual = obterSaldo(clienteSelecionado);
-    if (saldoAtual < valor) {
-      setMensagem("Saldo insuficiente. Faça uma recarga para concluir o pagamento.");
-      return;
-    }
-    const novosSaldos = { ...saldos, [clienteSelecionado]: saldoAtual - valor };
-    salvarSaldos(novosSaldos);
-    salvarPagamentos([...pagamentos, aluguel.id]);
-    setMensagem("Pagamento realizado com sucesso.");
   }
 
-  const alugueisDoCliente = alugueis.filter(
-    (a) => String(a.clienteId) === String(clienteSelecionado)
-  );
+  function formatarData(valor) {
+    if (!valor) return "-";
+    return String(valor).substring(0, 10);
+  }
 
   return (
     <div>
       <div className="cabecalho-pagina">
         <h2>Carteira e Pagamentos</h2>
-        <p>Consulta de saldo, recarga e pagamento de aluguéis com o valor disponível.</p>
+        <p>Consulta de saldo, recarga e pagamento de aluguéis com os dados salvos no banco.</p>
       </div>
 
       {mensagem && <div className="alert alert-info">{mensagem}</div>}
@@ -142,7 +121,7 @@ function Carteira() {
             <div className="col-md-3">
               <label className="form-label">Saldo atual</label>
               <div className="form-control bg-light">
-                R$ {clienteSelecionado ? obterSaldo(clienteSelecionado).toFixed(2) : "0.00"}
+                R$ {saldoAtual.toFixed(2)}
               </div>
             </div>
             <div className="col-md-3">
@@ -182,19 +161,19 @@ function Carteira() {
               </thead>
               <tbody>
                 {alugueisDoCliente.map((aluguel) => {
-                  const pago = pagamentos.includes(aluguel.id);
+                  const pago = Boolean(aluguel.pago);
                   return (
                     <tr key={aluguel.id}>
                       <td>{aluguel.id}</td>
                       <td>{aluguel.veiculo?.modelo || aluguel.veiculoId}</td>
-                      <td>{String(aluguel.dataInicio || "").substring(0, 10)}</td>
-                      <td>{aluguel.dataDevolucao ? String(aluguel.dataDevolucao).substring(0, 10) : "-"}</td>
+                      <td>{formatarData(aluguel.dataInicio)}</td>
+                      <td>{aluguel.dataDevolucao ? formatarData(aluguel.dataDevolucao) : "-"}</td>
                       <td>{aluguel.valorTotal != null ? `R$ ${Number(aluguel.valorTotal).toFixed(2)}` : "-"}</td>
                       <td>{pago ? "Pago" : (aluguel.valorTotal != null ? "Pendente" : "Aguardando devolução")}</td>
                       <td>
                         <button
                           className="btn btn-sm btn-primary"
-                          onClick={() => pagarAluguel(aluguel)}
+                          onClick={() => pagarAluguel(aluguel.id)}
                           disabled={pago || aluguel.valorTotal == null}
                         >
                           Pagar

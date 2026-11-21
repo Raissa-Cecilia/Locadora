@@ -252,6 +252,7 @@ function Alugueis() {
               <th>Valor diária</th>
               <th>Valor total</th>
               <th>Situação</th>
+              <th>Pagamento</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -266,6 +267,7 @@ function Alugueis() {
                 <td>R$ {aluguel.valorDiaria}</td>
                 <td>{aluguel.valorTotal != null ? `R$ ${aluguel.valorTotal}` : "-"}</td>
                 <td>{aluguel.dataDevolucao ? "Finalizado" : "Em aberto"}</td>
+                <td>{aluguel.pago ? "Pago" : (aluguel.valorTotal != null ? "Pendente" : "-")}</td>
                 <td>
                   {!aluguel.dataDevolucao && (
                     <button className="btn btn-sm btn-warning me-2" onClick={() => prepararDevolucao(aluguel)}>Devolver</button>
@@ -276,7 +278,7 @@ function Alugueis() {
             ))}
             {alugueis.length === 0 && (
               <tr>
-                <td colSpan="9" className="text-center">Nenhum aluguel encontrado.</td>
+                <td colSpan="10" className="text-center">Nenhum aluguel encontrado.</td>
               </tr>
             )}
           </tbody>

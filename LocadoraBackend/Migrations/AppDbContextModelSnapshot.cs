@@ -36,8 +36,14 @@ namespace LocadoraBackend.Migrations
                     b.Property<DateTime?>("DataDevolucao")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DataPagamento")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DataInicio")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("Pago")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("QuilometragemFinal")
                         .HasColumnType("int");
@@ -102,6 +108,9 @@ namespace LocadoraBackend.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("Saldo")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
