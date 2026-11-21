@@ -87,92 +87,104 @@ function Fabricantes() {
 
       {mensagem && <div className="alert alert-info">{mensagem}</div>}
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title">Pesquisa</h5>
-          <div className="row g-2">
-            <div className="col-md-5">
-              <input
-                className="form-control"
-                placeholder="Filtrar por nome"
-                value={filtroNome}
-                onChange={(e) => setFiltroNome(e.target.value)}
-              />
+      <div className="row g-3 mb-4">
+        <div className="col-lg-5">
+          <div className="card card-form h-100">
+            <div className="card-body">
+              <h5 className="card-title">Pesquisa</h5>
+              <div className="mb-3">
+                <label className="form-label">Nome</label>
+                <input
+                  className="form-control"
+                  placeholder="Filtrar por nome"
+                  value={filtroNome}
+                  onChange={(e) => setFiltroNome(e.target.value)}
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">ID</label>
+                <input
+                  className="form-control"
+                  type="number"
+                  placeholder="Filtrar por ID"
+                  value={filtroId}
+                  onChange={(e) => setFiltroId(e.target.value)}
+                />
+              </div>
+              <div className="d-flex gap-2">
+                <button className="btn btn-primary" onClick={() => carregarFabricantes()}>Pesquisar</button>
+                <button className="btn btn-secondary" onClick={limparFiltros}>Limpar</button>
+              </div>
             </div>
-            <div className="col-md-4">
-              <input
-                className="form-control"
-                type="number"
-                placeholder="Filtrar por ID"
-                value={filtroId}
-                onChange={(e) => setFiltroId(e.target.value)}
-              />
-            </div>
-            <div className="col-md-3 d-flex gap-2">
-              <button className="btn btn-primary w-100" onClick={() => carregarFabricantes()}>Pesquisar</button>
-              <button className="btn btn-secondary w-100" onClick={limparFiltros}>Limpar</button>
+          </div>
+        </div>
+
+        <div className="col-lg-7">
+          <div className="card card-form h-100">
+            <div className="card-body">
+              <h5 className="card-title">{editando ? "Editar fabricante" : "Cadastrar fabricante"}</h5>
+              <form onSubmit={salvarFabricante}>
+                <div className="mb-3">
+                  <label className="form-label">Nome do fabricante</label>
+                  <input
+                    className="form-control"
+                    name="nome"
+                    placeholder="Nome do fabricante"
+                    value={formulario.nome}
+                    onChange={atualizarCampo}
+                    required
+                  />
+                </div>
+                <div className="d-flex gap-2">
+                  <button className="btn btn-success" type="submit">
+                    {editando ? "Salvar" : "Cadastrar"}
+                  </button>
+                  {editando && (
+                    <button className="btn btn-outline-secondary" type="button" onClick={limparFormulario}>
+                      Cancelar
+                    </button>
+                  )}
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title">{editando ? "Editar fabricante" : "Cadastrar fabricante"}</h5>
-          <form onSubmit={salvarFabricante}>
-            <div className="row g-2">
-              <div className="col-md-8">
-                <input
-                  className="form-control"
-                  name="nome"
-                  placeholder="Nome do fabricante"
-                  value={formulario.nome}
-                  onChange={atualizarCampo}
-                  required
-                />
-              </div>
-              <div className="col-md-4 d-flex gap-2">
-                <button className="btn btn-success w-100" type="submit">
-                  {editando ? "Salvar" : "Cadastrar"}
-                </button>
-                {editando && (
-                  <button className="btn btn-outline-secondary w-100" type="button" onClick={limparFormulario}>
-                    Cancelar
-                  </button>
-                )}
-              </div>
-            </div>
-          </form>
+      <div className="card card-tabela">
+        <div className="card-header">
+          <h5>Fabricantes cadastrados</h5>
         </div>
-      </div>
-
-      <div className="table-responsive">
-        <table className="table table-striped align-middle">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {fabricantes.map((fabricante) => (
-              <tr key={fabricante.id}>
-                <td>{fabricante.id}</td>
-                <td>{fabricante.nome}</td>
-                <td>
-                  <button className="btn btn-sm btn-warning me-2" onClick={() => editarFabricante(fabricante)}>Editar</button>
-                  <button className="btn btn-sm btn-danger" onClick={() => excluirFabricante(fabricante.id)}>Excluir</button>
-                </td>
-              </tr>
-            ))}
-            {fabricantes.length === 0 && (
-              <tr>
-                <td colSpan="3" className="text-center">Nenhum fabricante encontrado.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <div className="card-body">
+          <div className="table-responsive">
+            <table className="table table-striped align-middle">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fabricantes.map((fabricante) => (
+                  <tr key={fabricante.id}>
+                    <td>{fabricante.id}</td>
+                    <td>{fabricante.nome}</td>
+                    <td>
+                      <button className="btn btn-sm btn-warning me-2" onClick={() => editarFabricante(fabricante)}>Editar</button>
+                      <button className="btn btn-sm btn-danger" onClick={() => excluirFabricante(fabricante.id)}>Excluir</button>
+                    </td>
+                  </tr>
+                ))}
+                {fabricantes.length === 0 && (
+                  <tr>
+                    <td colSpan="3" className="text-center py-4">Nenhum fabricante encontrado.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

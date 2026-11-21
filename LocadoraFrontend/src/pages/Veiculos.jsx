@@ -137,146 +137,164 @@ function Veiculos() {
 
       {mensagem && <div className="alert alert-info">{mensagem}</div>}
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title">Pesquisa</h5>
-          <div className="row g-2">
-            <div className="col-md-5">
-              <input
-                className="form-control"
-                placeholder="Filtrar por modelo"
-                value={filtroModelo}
-                onChange={(e) => setFiltroModelo(e.target.value)}
-              />
+      <div className="row g-3 mb-4">
+        <div className="col-lg-5">
+          <div className="card card-form h-100">
+            <div className="card-body">
+              <h5 className="card-title">Pesquisa</h5>
+              <div className="mb-3">
+                <label className="form-label">Modelo</label>
+                <input
+                  className="form-control"
+                  placeholder="Filtrar por modelo"
+                  value={filtroModelo}
+                  onChange={(e) => setFiltroModelo(e.target.value)}
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Ano de fabricação</label>
+                <input
+                  className="form-control"
+                  type="number"
+                  placeholder="Filtrar por ano"
+                  value={filtroAno}
+                  onChange={(e) => setFiltroAno(e.target.value)}
+                />
+              </div>
+              <div className="d-flex gap-2">
+                <button className="btn btn-primary" onClick={() => carregarVeiculos()}>Pesquisar</button>
+                <button className="btn btn-secondary" onClick={limparFiltros}>Limpar</button>
+              </div>
             </div>
-            <div className="col-md-4">
-              <input
-                className="form-control"
-                type="number"
-                placeholder="Filtrar por ano de fabricação"
-                value={filtroAno}
-                onChange={(e) => setFiltroAno(e.target.value)}
-              />
-            </div>
-            <div className="col-md-3 d-flex gap-2">
-              <button className="btn btn-primary w-100" onClick={() => carregarVeiculos()}>Pesquisar</button>
-              <button className="btn btn-secondary w-100" onClick={limparFiltros}>Limpar</button>
+          </div>
+        </div>
+
+        <div className="col-lg-7">
+          <div className="card card-form h-100">
+            <div className="card-body">
+              <h5 className="card-title">{editando ? "Editar veículo" : "Cadastrar veículo"}</h5>
+              <form onSubmit={salvarVeiculo}>
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <label className="form-label">Modelo</label>
+                    <input
+                      className="form-control"
+                      name="modelo"
+                      placeholder="Modelo"
+                      value={formulario.modelo}
+                      onChange={atualizarCampo}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-3">
+                    <label className="form-label">Ano</label>
+                    <input
+                      className="form-control"
+                      type="number"
+                      name="anoFabricacao"
+                      placeholder="Ano"
+                      value={formulario.anoFabricacao}
+                      onChange={atualizarCampo}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-3">
+                    <label className="form-label">Km</label>
+                    <input
+                      className="form-control"
+                      type="number"
+                      name="quilometragem"
+                      placeholder="Quilometragem"
+                      value={formulario.quilometragem}
+                      onChange={atualizarCampo}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Fabricante</label>
+                    <select
+                      className="form-select"
+                      name="fabricanteId"
+                      value={formulario.fabricanteId}
+                      onChange={atualizarCampo}
+                      required
+                    >
+                      <option value="">Selecione o fabricante</option>
+                      {fabricantes.map((f) => (
+                        <option key={f.id} value={f.id}>{f.nome}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Categoria</label>
+                    <select
+                      className="form-select"
+                      name="categoriaId"
+                      value={formulario.categoriaId}
+                      onChange={atualizarCampo}
+                      required
+                    >
+                      <option value="">Selecione a categoria</option>
+                      {categorias.map((c) => (
+                        <option key={c.id} value={c.id}>{c.nome}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="col-12 d-flex gap-2">
+                    <button className="btn btn-success" type="submit">{editando ? "Salvar" : "Cadastrar"}</button>
+                    {editando && (
+                      <button className="btn btn-outline-secondary" type="button" onClick={limparFormulario}>Cancelar</button>
+                    )}
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title">{editando ? "Editar veículo" : "Cadastrar veículo"}</h5>
-          <form onSubmit={salvarVeiculo}>
-            <div className="row g-2">
-              <div className="col-md-3">
-                <input
-                  className="form-control"
-                  name="modelo"
-                  placeholder="Modelo"
-                  value={formulario.modelo}
-                  onChange={atualizarCampo}
-                  required
-                />
-              </div>
-              <div className="col-md-2">
-                <input
-                  className="form-control"
-                  type="number"
-                  name="anoFabricacao"
-                  placeholder="Ano"
-                  value={formulario.anoFabricacao}
-                  onChange={atualizarCampo}
-                  required
-                />
-              </div>
-              <div className="col-md-2">
-                <input
-                  className="form-control"
-                  type="number"
-                  name="quilometragem"
-                  placeholder="Km"
-                  value={formulario.quilometragem}
-                  onChange={atualizarCampo}
-                  required
-                />
-              </div>
-              <div className="col-md-2">
-                <select
-                  className="form-select"
-                  name="fabricanteId"
-                  value={formulario.fabricanteId}
-                  onChange={atualizarCampo}
-                  required
-                >
-                  <option value="">Fabricante</option>
-                  {fabricantes.map((f) => (
-                    <option key={f.id} value={f.id}>{f.nome}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="col-md-2">
-                <select
-                  className="form-select"
-                  name="categoriaId"
-                  value={formulario.categoriaId}
-                  onChange={atualizarCampo}
-                  required
-                >
-                  <option value="">Categoria</option>
-                  {categorias.map((c) => (
-                    <option key={c.id} value={c.id}>{c.nome}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="col-md-1 d-flex gap-2 flex-column">
-                <button className="btn btn-success" type="submit">{editando ? "Salvar" : "Cadastrar"}</button>
-                {editando && (
-                  <button className="btn btn-outline-secondary" type="button" onClick={limparFormulario}>Cancelar</button>
-                )}
-              </div>
-            </div>
-          </form>
+      <div className="card card-tabela">
+        <div className="card-header">
+          <h5>Veículos cadastrados</h5>
         </div>
-      </div>
-
-      <div className="table-responsive">
-        <table className="table table-striped align-middle">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Modelo</th>
-              <th>Ano</th>
-              <th>Km</th>
-              <th>Fabricante</th>
-              <th>Categoria</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {veiculos.map((veiculo) => (
-              <tr key={veiculo.id}>
-                <td>{veiculo.id}</td>
-                <td>{veiculo.modelo}</td>
-                <td>{veiculo.anoFabricacao}</td>
-                <td>{veiculo.quilometragem}</td>
-                <td>{veiculo.fabricante?.nome || veiculo.fabricanteId}</td>
-                <td>{veiculo.categoria?.nome || veiculo.categoriaId}</td>
-                <td>
-                  <button className="btn btn-sm btn-warning me-2" onClick={() => editarVeiculo(veiculo)}>Editar</button>
-                  <button className="btn btn-sm btn-danger" onClick={() => excluirVeiculo(veiculo.id)}>Excluir</button>
-                </td>
-              </tr>
-            ))}
-            {veiculos.length === 0 && (
-              <tr>
-                <td colSpan="7" className="text-center">Nenhum veículo encontrado.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <div className="card-body">
+          <div className="table-responsive">
+            <table className="table table-striped align-middle">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Modelo</th>
+                  <th>Ano</th>
+                  <th>Km</th>
+                  <th>Fabricante</th>
+                  <th>Categoria</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {veiculos.map((veiculo) => (
+                  <tr key={veiculo.id}>
+                    <td>{veiculo.id}</td>
+                    <td>{veiculo.modelo}</td>
+                    <td>{veiculo.anoFabricacao}</td>
+                    <td>{veiculo.quilometragem}</td>
+                    <td>{veiculo.fabricante?.nome || veiculo.fabricanteId}</td>
+                    <td>{veiculo.categoria?.nome || veiculo.categoriaId}</td>
+                    <td>
+                      <button className="btn btn-sm btn-warning me-2" onClick={() => editarVeiculo(veiculo)}>Editar</button>
+                      <button className="btn btn-sm btn-danger" onClick={() => excluirVeiculo(veiculo.id)}>Excluir</button>
+                    </td>
+                  </tr>
+                ))}
+                {veiculos.length === 0 && (
+                  <tr>
+                    <td colSpan="7" className="text-center py-4">Nenhum veículo encontrado.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
