@@ -130,7 +130,10 @@ function Veiculos() {
 
   return (
     <div>
-      <h2 className="mb-3">Veículos</h2>
+      <div className="cabecalho-pagina">
+        <h2>Veículos</h2>
+        <p>Cadastro, edição, exclusão e pesquisa de veículos por modelo e ano de fabricação.</p>
+      </div>
 
       {mensagem && <div className="alert alert-info">{mensagem}</div>}
 

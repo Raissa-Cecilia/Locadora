@@ -80,7 +80,10 @@ function Categorias() {
 
   return (
     <div>
-      <h2 className="mb-3">Categorias</h2>
+      <div className="cabecalho-pagina">
+        <h2>Categorias</h2>
+        <p>Cadastro, edição, exclusão e pesquisa de categorias por nome e ID.</p>
+      </div>
 
       {mensagem && <div className="alert alert-info">{mensagem}</div>}
 

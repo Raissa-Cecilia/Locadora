@@ -1,17 +1,134 @@
-body {
-  margin: 0;
-  background-color: #f5f7fb;
+:root {
+  --azul-escuro: #0b2d5c;
+  --azul-medio: #134074;
+  --azul-claro: #1e5aa8;
+  --azul-suave: #eaf2fb;
+  --texto: #1f2d3d;
+  --fundo: #f3f6fb;
 }
 
-.nav-link.active {
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #f7faff 0%, var(--fundo) 100%);
+  color: var(--texto);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.barra-topo {
+  background: linear-gradient(90deg, var(--azul-escuro), var(--azul-medio));
+  box-shadow: 0 2px 10px rgba(11, 45, 92, 0.25);
+}
+
+.barra-topo .navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.barra-topo .nav-link {
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  margin: 0 2px;
+  padding: 8px 12px;
+}
+
+.barra-topo .nav-link:hover,
+.barra-topo .nav-link.active {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.14);
   font-weight: 600;
+}
+
+.conteudo-principal {
+  max-width: 1200px;
+}
+
+.cabecalho-pagina {
+  background: linear-gradient(135deg, var(--azul-escuro), var(--azul-claro));
+  color: #fff;
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 20px rgba(11, 45, 92, 0.18);
+}
+
+.cabecalho-pagina h1,
+.cabecalho-pagina h2 {
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.cabecalho-pagina p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .card {
   border: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(19, 64, 116, 0.08);
+}
+
+.card-title {
+  color: var(--azul-escuro);
+  font-weight: 700;
 }
 
 .table {
   background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.table thead th {
+  background-color: var(--azul-suave);
+  color: var(--azul-escuro);
+  border-bottom: none;
+  font-weight: 600;
+}
+
+.table-responsive {
+  border-radius: 12px;
+}
+
+.btn-primary {
+  background-color: var(--azul-claro);
+  border-color: var(--azul-claro);
+}
+
+.btn-primary:hover {
+  background-color: var(--azul-medio);
+  border-color: var(--azul-medio);
+}
+
+.btn-success {
+  background-color: #1f7a5a;
+  border-color: #1f7a5a;
+}
+
+.form-control,
+.form-select {
+  border-radius: 10px;
+  border-color: #d7e2f2;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #8fb6e8;
+  box-shadow: 0 0 0 0.2rem rgba(30, 90, 168, 0.15);
+}
+
+.alert-info {
+  background-color: #e8f1fd;
+  border-color: #cfe0f7;
+  color: #123f79;
+}
+
+.painel-destaque {
+  border-left: 5px solid var(--azul-claro);
+}
+
+.rodape {
+  color: #5d6d82;
+  font-size: 0.9rem;
 }

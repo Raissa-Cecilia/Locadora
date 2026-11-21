@@ -115,7 +115,10 @@ function Carteira() {
 
   return (
     <div>
-      <h2 className="mb-3">Carteira e Pagamentos</h2>
+      <div className="cabecalho-pagina">
+        <h2>Carteira e Pagamentos</h2>
+        <p>Consulta de saldo, recarga e pagamento de aluguéis com o valor disponível.</p>
+      </div>
 
       {mensagem && <div className="alert alert-info">{mensagem}</div>}
 

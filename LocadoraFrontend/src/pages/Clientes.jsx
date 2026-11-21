@@ -83,7 +83,10 @@ function Clientes() {
 
   return (
     <div>
-      <h2 className="mb-3">Clientes</h2>
+      <div className="cabecalho-pagina">
+        <h2>Clientes</h2>
+        <p>Cadastro, edição, exclusão e pesquisa de clientes por nome e CPF.</p>
+      </div>
 
       {mensagem && <div className="alert alert-info">{mensagem}</div>}
 

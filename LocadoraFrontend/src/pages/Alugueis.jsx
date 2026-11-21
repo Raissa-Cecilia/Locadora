@@ -146,7 +146,10 @@ function Alugueis() {
 
   return (
     <div>
-      <h2 className="mb-3">Aluguéis</h2>
+      <div className="cabecalho-pagina">
+        <h2>Aluguéis</h2>
+        <p>Registro, devolução, exclusão e pesquisa de aluguéis por cliente e situação.</p>
+      </div>
 
       {mensagem && <div className="alert alert-info">{mensagem}</div>}
 

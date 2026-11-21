@@ -3,15 +3,17 @@
 function Inicio() {
   return (
     <div>
-      <h1 className="mb-3">Sistema de Locadora de Veículos</h1>
-      <p className="text-muted">
-        Projeto de continuidade com front-end integrado à API da locadora. Aqui ficam as telas de cadastro,
-        edição, exclusão, pesquisa, relatórios e controle de saldo/pagamento.
-      </p>
+      <div className="cabecalho-pagina">
+        <h1>Sistema de Locadora de Veículos</h1>
+        <p>
+          Projeto de continuidade com front-end integrado à API da locadora, com cadastros, pesquisas,
+          relatórios, devoluções e controle de saldo/pagamento.
+        </p>
+      </div>
 
       <div className="row g-3 mb-4">
         <div className="col-md-4">
-          <div className="card h-100">
+          <div className="card h-100 painel-destaque">
             <div className="card-body">
               <h5 className="card-title">Problema</h5>
               <p className="card-text">Controle manual de clientes, veículos e aluguéis dificultava consultas e organização financeira.</p>
@@ -19,7 +21,7 @@ function Inicio() {
           </div>
         </div>
         <div className="col-md-4">
-          <div className="card h-100">
+          <div className="card h-100 painel-destaque">
             <div className="card-body">
               <h5 className="card-title">Solução</h5>
               <p className="card-text">Sistema web para gerenciar cadastros, aluguéis, devoluções, relatórios e carteira de saldo.</p>
@@ -27,7 +29,7 @@ function Inicio() {
           </div>
         </div>
         <div className="col-md-4">
-          <div className="card h-100">
+          <div className="card h-100 painel-destaque">
             <div className="card-body">
               <h5 className="card-title">Dados fictícios</h5>
               <p className="card-text">As tabelas abaixo mostram exemplos definidos na etapa inicial do projeto.</p>

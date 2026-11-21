@@ -76,8 +76,10 @@ function Relatorios() {
 
   return (
     <div>
-      <h2 className="mb-3">Relatórios e Consultas</h2>
-      <p className="text-muted">Visualizações baseadas nas consultas do banco de dados (rotas de relatório da API).</p>
+      <div className="cabecalho-pagina">
+        <h2>Relatórios e Consultas</h2>
+        <p>Visualizações baseadas nas consultas do banco de dados (rotas de relatório da API).</p>
+      </div>
 
       {mensagem && <div className="alert alert-warning">{mensagem}</div>}
 

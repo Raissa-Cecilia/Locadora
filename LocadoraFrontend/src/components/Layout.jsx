@@ -3,9 +3,9 @@
 function Layout({ children }) {
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className="container">
-          <NavLink className="navbar-brand" to="/">Locadora</NavLink>
+      <nav className="navbar navbar-expand-lg navbar-dark barra-topo">
+        <div className="container conteudo-principal">
+          <NavLink className="navbar-brand" to="/">Locadora de Veículos</NavLink>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -23,7 +23,10 @@ function Layout({ children }) {
           </div>
         </div>
       </nav>
-      <main className="container py-4">{children}</main>
+      <main className="container conteudo-principal py-4">{children}</main>
+      <footer className="container conteudo-principal pb-4 rodape">
+        Sistema de locadora com cadastros, aluguéis, relatórios e carteira.
+      </footer>
     </div>
   );
 }
