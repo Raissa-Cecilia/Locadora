@@ -1,4 +1,4 @@
-using LocadoraBackend.Data;
+﻿using LocadoraBackend.Data;
 using LocadoraBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,18 +17,39 @@ namespace LocadoraBackend.Controllers
         }
 
         /// <summary>
-        /// Retorna todos os aluguéis registrados.
+        /// Retorna os aluguéis registrados, com filtros opcionais por cliente e situação.
         /// </summary>
+        /// <param name="cliente">Filtro por nome do cliente</param>
+        /// <param name="situacao">Filtro por situação: aberto, finalizado ou todos</param>
         /// <returns>Lista de aluguéis</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Aluguel>>> GetAlugueis()
+        public async Task<ActionResult<IEnumerable<Aluguel>>> GetAlugueis([FromQuery] string? cliente, [FromQuery] string? situacao)
         {
             try
             {
-                return await _context.Alugueis
+                var consulta = _context.Alugueis
                     .Include(a => a.Cliente)
                     .Include(a => a.Veiculo)
-                    .ToListAsync();
+                    .AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(cliente))
+                {
+                    consulta = consulta.Where(a => a.Cliente != null && a.Cliente.Nome.Contains(cliente));
+                }
+
+                if (!string.IsNullOrWhiteSpace(situacao) && situacao.ToLower() != "todos")
+                {
+                    if (situacao.ToLower() == "aberto")
+                    {
+                        consulta = consulta.Where(a => a.DataDevolucao == null);
+                    }
+                    else if (situacao.ToLower() == "finalizado")
+                    {
+                        consulta = consulta.Where(a => a.DataDevolucao != null);
+                    }
+                }
+
+                return await consulta.ToListAsync();
             }
             catch (Exception ex) { return StatusCode(500, $"Erro interno: {ex.Message}"); }
         }
