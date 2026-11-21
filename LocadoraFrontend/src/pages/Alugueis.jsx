@@ -153,86 +153,99 @@ function Alugueis() {
 
       {mensagem && <div className="alert alert-info">{mensagem}</div>}
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title">Pesquisa</h5>
-          <div className="row g-2">
-            <div className="col-md-5">
-              <input
-                className="form-control"
-                placeholder="Filtrar por nome do cliente"
-                value={filtroCliente}
-                onChange={(e) => setFiltroCliente(e.target.value)}
-              />
+      <div className="row g-3 mb-4">
+        <div className="col-lg-5">
+          <div className="card card-form h-100">
+            <div className="card-body">
+              <h5 className="card-title">Pesquisa</h5>
+              <div className="mb-3">
+                <label className="form-label">Cliente</label>
+                <input
+                  className="form-control"
+                  placeholder="Filtrar por nome do cliente"
+                  value={filtroCliente}
+                  onChange={(e) => setFiltroCliente(e.target.value)}
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Situação</label>
+                <select
+                  className="form-select"
+                  value={filtroSituacao}
+                  onChange={(e) => setFiltroSituacao(e.target.value)}
+                >
+                  <option value="todos">Todas as situações</option>
+                  <option value="aberto">Em aberto</option>
+                  <option value="finalizado">Finalizado</option>
+                </select>
+              </div>
+              <div className="d-flex gap-2">
+                <button className="btn btn-primary" onClick={() => carregarAlugueis()}>Pesquisar</button>
+                <button className="btn btn-secondary" onClick={limparFiltros}>Limpar</button>
+              </div>
             </div>
-            <div className="col-md-4">
-              <select
-                className="form-select"
-                value={filtroSituacao}
-                onChange={(e) => setFiltroSituacao(e.target.value)}
-              >
-                <option value="todos">Todas as situações</option>
-                <option value="aberto">Em aberto</option>
-                <option value="finalizado">Finalizado</option>
-              </select>
-            </div>
-            <div className="col-md-3 d-flex gap-2">
-              <button className="btn btn-primary w-100" onClick={() => carregarAlugueis()}>Pesquisar</button>
-              <button className="btn btn-secondary w-100" onClick={limparFiltros}>Limpar</button>
+          </div>
+        </div>
+
+        <div className="col-lg-7">
+          <div className="card card-form h-100">
+            <div className="card-body">
+              <h5 className="card-title">Registrar novo aluguel</h5>
+              <form onSubmit={registrarAluguel}>
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <label className="form-label">Cliente</label>
+                    <select className="form-select" name="clienteId" value={formulario.clienteId} onChange={atualizarFormulario} required>
+                      <option value="">Selecione o cliente</option>
+                      {clientes.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
+                    </select>
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Veículo</label>
+                    <select className="form-select" name="veiculoId" value={formulario.veiculoId} onChange={atualizarFormulario} required>
+                      <option value="">Selecione o veículo</option>
+                      {veiculos.map((v) => <option key={v.id} value={v.id}>{v.modelo}</option>)}
+                    </select>
+                  </div>
+                  <div className="col-md-4">
+                    <label className="form-label">Data de início</label>
+                    <input className="form-control" type="date" name="dataInicio" value={formulario.dataInicio} onChange={atualizarFormulario} required />
+                  </div>
+                  <div className="col-md-4">
+                    <label className="form-label">Km inicial</label>
+                    <input className="form-control" type="number" name="quilometragemInicial" placeholder="Km inicial" value={formulario.quilometragemInicial} onChange={atualizarFormulario} required />
+                  </div>
+                  <div className="col-md-4">
+                    <label className="form-label">Valor da diária</label>
+                    <input className="form-control" type="number" step="0.01" name="valorDiaria" placeholder="Diária" value={formulario.valorDiaria} onChange={atualizarFormulario} required />
+                  </div>
+                  <div className="col-12">
+                    <button className="btn btn-success" type="submit">Salvar</button>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title">Registrar novo aluguel</h5>
-          <form onSubmit={registrarAluguel}>
-            <div className="row g-2">
-              <div className="col-md-3">
-                <select className="form-select" name="clienteId" value={formulario.clienteId} onChange={atualizarFormulario} required>
-                  <option value="">Cliente</option>
-                  {clientes.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
-                </select>
-              </div>
-              <div className="col-md-3">
-                <select className="form-select" name="veiculoId" value={formulario.veiculoId} onChange={atualizarFormulario} required>
-                  <option value="">Veículo</option>
-                  {veiculos.map((v) => <option key={v.id} value={v.id}>{v.modelo}</option>)}
-                </select>
-              </div>
-              <div className="col-md-2">
-                <input className="form-control" type="date" name="dataInicio" value={formulario.dataInicio} onChange={atualizarFormulario} required />
-              </div>
-              <div className="col-md-2">
-                <input className="form-control" type="number" name="quilometragemInicial" placeholder="Km inicial" value={formulario.quilometragemInicial} onChange={atualizarFormulario} required />
-              </div>
-              <div className="col-md-1">
-                <input className="form-control" type="number" step="0.01" name="valorDiaria" placeholder="Diária" value={formulario.valorDiaria} onChange={atualizarFormulario} required />
-              </div>
-              <div className="col-md-1">
-                <button className="btn btn-success w-100" type="submit">Salvar</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-
       {devolucao.id && (
-        <div className="card mb-4 border-warning">
+        <div className="card card-form mb-4 border-warning">
           <div className="card-body">
             <h5 className="card-title">Registrar devolução (aluguel #{devolucao.id})</h5>
             <form onSubmit={confirmarDevolucao}>
-              <div className="row g-2">
+              <div className="row g-3">
                 <div className="col-md-4">
+                  <label className="form-label">Data de devolução</label>
                   <input className="form-control" type="date" name="dataDevolucao" value={devolucao.dataDevolucao} onChange={atualizarDevolucao} required />
                 </div>
                 <div className="col-md-4">
+                  <label className="form-label">Km final</label>
                   <input className="form-control" type="number" name="quilometragemFinal" placeholder="Km final" value={devolucao.quilometragemFinal} onChange={atualizarDevolucao} required />
                 </div>
-                <div className="col-md-4 d-flex gap-2">
-                  <button className="btn btn-warning w-100" type="submit">Confirmar devolução</button>
-                  <button className="btn btn-outline-secondary w-100" type="button" onClick={() => setDevolucao({ id: null, dataDevolucao: "", quilometragemFinal: "" })}>Cancelar</button>
+                <div className="col-md-4 d-flex align-items-end gap-2">
+                  <button className="btn btn-warning" type="submit">Confirmar devolução</button>
+                  <button className="btn btn-outline-secondary" type="button" onClick={() => setDevolucao({ id: null, dataDevolucao: "", quilometragemFinal: "" })}>Cancelar</button>
                 </div>
               </div>
             </form>
@@ -240,49 +253,66 @@ function Alugueis() {
         </div>
       )}
 
-      <div className="table-responsive">
-        <table className="table table-striped align-middle">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Cliente</th>
-              <th>Veículo</th>
-              <th>Início</th>
-              <th>Devolução</th>
-              <th>Valor diária</th>
-              <th>Valor total</th>
-              <th>Situação</th>
-              <th>Pagamento</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {alugueis.map((aluguel) => (
-              <tr key={aluguel.id}>
-                <td>{aluguel.id}</td>
-                <td>{aluguel.cliente?.nome || aluguel.clienteId}</td>
-                <td>{aluguel.veiculo?.modelo || aluguel.veiculoId}</td>
-                <td>{formatarData(aluguel.dataInicio)}</td>
-                <td>{formatarData(aluguel.dataDevolucao)}</td>
-                <td>R$ {aluguel.valorDiaria}</td>
-                <td>{aluguel.valorTotal != null ? `R$ ${aluguel.valorTotal}` : "-"}</td>
-                <td>{aluguel.dataDevolucao ? "Finalizado" : "Em aberto"}</td>
-                <td>{aluguel.pago ? "Pago" : (aluguel.valorTotal != null ? "Pendente" : "-")}</td>
-                <td>
-                  {!aluguel.dataDevolucao && (
-                    <button className="btn btn-sm btn-warning me-2" onClick={() => prepararDevolucao(aluguel)}>Devolver</button>
-                  )}
-                  <button className="btn btn-sm btn-danger" onClick={() => excluirAluguel(aluguel.id)}>Excluir</button>
-                </td>
-              </tr>
-            ))}
-            {alugueis.length === 0 && (
-              <tr>
-                <td colSpan="10" className="text-center">Nenhum aluguel encontrado.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div className="card card-tabela">
+        <div className="card-header">
+          <h5>Aluguéis cadastrados</h5>
+        </div>
+        <div className="card-body">
+          <div className="table-responsive">
+            <table className="table table-striped align-middle">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Cliente</th>
+                  <th>Veículo</th>
+                  <th>Início</th>
+                  <th>Devolução</th>
+                  <th>Valor diária</th>
+                  <th>Valor total</th>
+                  <th>Situação</th>
+                  <th>Pagamento</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {alugueis.map((aluguel) => (
+                  <tr key={aluguel.id}>
+                    <td>{aluguel.id}</td>
+                    <td>{aluguel.cliente?.nome || aluguel.clienteId}</td>
+                    <td>{aluguel.veiculo?.modelo || aluguel.veiculoId}</td>
+                    <td>{formatarData(aluguel.dataInicio)}</td>
+                    <td>{formatarData(aluguel.dataDevolucao)}</td>
+                    <td>R$ {aluguel.valorDiaria}</td>
+                    <td>{aluguel.valorTotal != null ? `R$ ${aluguel.valorTotal}` : "-"}</td>
+                    <td>
+                      <span className={`badge ${aluguel.dataDevolucao ? "bg-secondary" : "bg-primary"}`}>
+                        {aluguel.dataDevolucao ? "Finalizado" : "Em aberto"}
+                      </span>
+                    </td>
+                    <td>
+                      {aluguel.pago ? (
+                        <span className="badge bg-success">Pago</span>
+                      ) : aluguel.valorTotal != null ? (
+                        <span className="badge bg-warning text-dark">Pendente</span>
+                      ) : "-"}
+                    </td>
+                    <td>
+                      {!aluguel.dataDevolucao && (
+                        <button className="btn btn-sm btn-warning me-2" onClick={() => prepararDevolucao(aluguel)}>Devolver</button>
+                      )}
+                      <button className="btn btn-sm btn-danger" onClick={() => excluirAluguel(aluguel.id)}>Excluir</button>
+                    </td>
+                  </tr>
+                ))}
+                {alugueis.length === 0 && (
+                  <tr>
+                    <td colSpan="10" className="text-center py-4">Nenhum aluguel encontrado.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

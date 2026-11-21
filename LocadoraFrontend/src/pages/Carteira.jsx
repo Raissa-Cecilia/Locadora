@@ -101,51 +101,62 @@ function Carteira() {
 
       {mensagem && <div className="alert alert-info">{mensagem}</div>}
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title">Consulta de saldo e recarga</h5>
-          <div className="row g-2 align-items-end">
-            <div className="col-md-4">
-              <label className="form-label">Cliente</label>
-              <select
-                className="form-select"
-                value={clienteSelecionado}
-                onChange={(e) => setClienteSelecionado(e.target.value)}
-              >
-                <option value="">Selecione um cliente</option>
-                {clientes.map((c) => (
-                  <option key={c.id} value={c.id}>{c.nome}</option>
-                ))}
-              </select>
-            </div>
-            <div className="col-md-3">
-              <label className="form-label">Saldo atual</label>
-              <div className="form-control bg-light">
-                R$ {saldoAtual.toFixed(2)}
+      <div className="row g-3 mb-4">
+        <div className="col-lg-7">
+          <div className="card card-form h-100">
+            <div className="card-body">
+              <h5 className="card-title">Consulta de saldo e recarga</h5>
+              <div className="row g-3 align-items-end">
+                <div className="col-md-6">
+                  <label className="form-label">Cliente</label>
+                  <select
+                    className="form-select"
+                    value={clienteSelecionado}
+                    onChange={(e) => setClienteSelecionado(e.target.value)}
+                  >
+                    <option value="">Selecione um cliente</option>
+                    {clientes.map((c) => (
+                      <option key={c.id} value={c.id}>{c.nome}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label">Valor da recarga</label>
+                  <input
+                    className="form-control"
+                    type="number"
+                    step="0.01"
+                    placeholder="Ex: 100"
+                    value={valorRecarga}
+                    onChange={(e) => setValorRecarga(e.target.value)}
+                  />
+                </div>
+                <div className="col-12">
+                  <button className="btn btn-success" onClick={recarregarSaldo}>Recarregar saldo</button>
+                </div>
               </div>
             </div>
-            <div className="col-md-3">
-              <label className="form-label">Valor da recarga</label>
-              <input
-                className="form-control"
-                type="number"
-                step="0.01"
-                placeholder="Ex: 100"
-                value={valorRecarga}
-                onChange={(e) => setValorRecarga(e.target.value)}
-              />
-            </div>
-            <div className="col-md-2">
-              <button className="btn btn-success w-100" onClick={recarregarSaldo}>Recarregar</button>
+          </div>
+        </div>
+
+        <div className="col-lg-5">
+          <div className="card card-indicador h-100">
+            <div className="card-body d-flex flex-column justify-content-center">
+              <div className="indicador-legenda">Saldo atual do cliente</div>
+              <div className="indicador-valor">R$ {saldoAtual.toFixed(2)}</div>
+              <p className="text-muted mt-2 mb-0">
+                {clienteAtual ? `Cliente selecionado: ${clienteAtual.nome}` : "Selecione um cliente para consultar o saldo."}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="card">
+      <div className="card card-tabela">
+        <div className="card-header">
+          <h5>Pagamento de aluguéis</h5>
+        </div>
         <div className="card-body">
-          <h5 className="card-title">Pagamento de aluguéis</h5>
-          <p className="text-muted">Selecione um cliente para ver os aluguéis e realizar o pagamento com o saldo disponível.</p>
           <div className="table-responsive">
             <table className="table table-striped align-middle">
               <thead>
@@ -169,7 +180,15 @@ function Carteira() {
                       <td>{formatarData(aluguel.dataInicio)}</td>
                       <td>{aluguel.dataDevolucao ? formatarData(aluguel.dataDevolucao) : "-"}</td>
                       <td>{aluguel.valorTotal != null ? `R$ ${Number(aluguel.valorTotal).toFixed(2)}` : "-"}</td>
-                      <td>{pago ? "Pago" : (aluguel.valorTotal != null ? "Pendente" : "Aguardando devolução")}</td>
+                      <td>
+                        {pago ? (
+                          <span className="badge bg-success">Pago</span>
+                        ) : aluguel.valorTotal != null ? (
+                          <span className="badge bg-warning text-dark">Pendente</span>
+                        ) : (
+                          <span className="badge bg-secondary">Aguardando devolução</span>
+                        )}
+                      </td>
                       <td>
                         <button
                           className="btn btn-sm btn-primary"
@@ -184,12 +203,12 @@ function Carteira() {
                 })}
                 {clienteSelecionado && alugueisDoCliente.length === 0 && (
                   <tr>
-                    <td colSpan="7" className="text-center">Nenhum aluguel encontrado para este cliente.</td>
+                    <td colSpan="7" className="text-center py-4">Nenhum aluguel encontrado para este cliente.</td>
                   </tr>
                 )}
                 {!clienteSelecionado && (
                   <tr>
-                    <td colSpan="7" className="text-center">Selecione um cliente para consultar os aluguéis.</td>
+                    <td colSpan="7" className="text-center py-4">Selecione um cliente para consultar os aluguéis.</td>
                   </tr>
                 )}
               </tbody>
