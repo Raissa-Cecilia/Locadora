@@ -1,8 +1,280 @@
-﻿function Veiculos() {
+﻿import { useEffect, useState } from "react";
+import { apiDelete, apiGet, apiPost, apiPut } from "../services/api";
+
+function Veiculos() {
+  const [veiculos, setVeiculos] = useState([]);
+  const [fabricantes, setFabricantes] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [formulario, setFormulario] = useState({
+    id: 0,
+    modelo: "",
+    anoFabricacao: "",
+    quilometragem: "",
+    fabricanteId: "",
+    categoriaId: ""
+  });
+  const [filtroModelo, setFiltroModelo] = useState("");
+  const [filtroAno, setFiltroAno] = useState("");
+  const [mensagem, setMensagem] = useState("");
+  const [editando, setEditando] = useState(false);
+
+  async function carregarListas() {
+    try {
+      const listaFabricantes = await apiGet("/Fabricantes");
+      const listaCategorias = await apiGet("/Categorias");
+      setFabricantes(listaFabricantes);
+      setCategorias(listaCategorias);
+    } catch (erro) {
+      setMensagem("Erro ao carregar fabricantes e categorias.");
+    }
+  }
+
+  async function carregarVeiculos(modeloBusca = filtroModelo, anoBusca = filtroAno) {
+    try {
+      const params = new URLSearchParams();
+      if (modeloBusca) params.append("modelo", modeloBusca);
+      if (anoBusca) params.append("anoFabricacao", anoBusca);
+      const texto = params.toString();
+      const dados = await apiGet(`/Veiculos${texto ? `?${texto}` : ""}`);
+      setVeiculos(dados);
+      setMensagem("");
+    } catch (erro) {
+      setMensagem("Não foi possível carregar os veículos. Verifique se a API está em execução.");
+    }
+  }
+
+  useEffect(() => {
+    carregarListas();
+    carregarVeiculos("", "");
+  }, []);
+
+  function atualizarCampo(evento) {
+    const { name, value } = evento.target;
+    setFormulario({ ...formulario, [name]: value });
+  }
+
+  function limparFormulario() {
+    setFormulario({
+      id: 0,
+      modelo: "",
+      anoFabricacao: "",
+      quilometragem: "",
+      fabricanteId: "",
+      categoriaId: ""
+    });
+    setEditando(false);
+  }
+
+  async function salvarVeiculo(evento) {
+    evento.preventDefault();
+    const dadosVeiculo = {
+      id: formulario.id,
+      modelo: formulario.modelo,
+      anoFabricacao: Number(formulario.anoFabricacao),
+      quilometragem: Number(formulario.quilometragem),
+      fabricanteId: Number(formulario.fabricanteId),
+      categoriaId: Number(formulario.categoriaId)
+    };
+
+    try {
+      if (editando) {
+        await apiPut(`/Veiculos/${formulario.id}`, dadosVeiculo);
+        setMensagem("Veículo atualizado com sucesso.");
+      } else {
+        await apiPost("/Veiculos", {
+          modelo: dadosVeiculo.modelo,
+          anoFabricacao: dadosVeiculo.anoFabricacao,
+          quilometragem: dadosVeiculo.quilometragem,
+          fabricanteId: dadosVeiculo.fabricanteId,
+          categoriaId: dadosVeiculo.categoriaId
+        });
+        setMensagem("Veículo cadastrado com sucesso.");
+      }
+      limparFormulario();
+      carregarVeiculos();
+    } catch (erro) {
+      setMensagem("Erro ao salvar veículo. Confira os dados e as seleções.");
+    }
+  }
+
+  function editarVeiculo(veiculo) {
+    setFormulario({
+      id: veiculo.id,
+      modelo: veiculo.modelo || "",
+      anoFabricacao: veiculo.anoFabricacao || "",
+      quilometragem: veiculo.quilometragem ?? "",
+      fabricanteId: veiculo.fabricanteId || veiculo.fabricante?.id || "",
+      categoriaId: veiculo.categoriaId || veiculo.categoria?.id || ""
+    });
+    setEditando(true);
+  }
+
+  async function excluirVeiculo(id) {
+    const confirmar = window.confirm("Deseja excluir este veículo?");
+    if (!confirmar) return;
+
+    try {
+      await apiDelete(`/Veiculos/${id}`);
+      setMensagem("Veículo excluído com sucesso.");
+      carregarVeiculos();
+    } catch (erro) {
+      setMensagem("Erro ao excluir veículo. Verifique se ele possui aluguéis vinculados.");
+    }
+  }
+
+  function limparFiltros() {
+    setFiltroModelo("");
+    setFiltroAno("");
+    carregarVeiculos("", "");
+  }
+
   return (
     <div>
-      <h2>Veiculos</h2>
-      <p className="text-muted">Tela em desenvolvimento. As funcionalidades desta etapa serão implementadas nas próximas mudanças.</p>
+      <h2 className="mb-3">Veículos</h2>
+
+      {mensagem && <div className="alert alert-info">{mensagem}</div>}
+
+      <div className="card mb-4">
+        <div className="card-body">
+          <h5 className="card-title">Pesquisa</h5>
+          <div className="row g-2">
+            <div className="col-md-5">
+              <input
+                className="form-control"
+                placeholder="Filtrar por modelo"
+                value={filtroModelo}
+                onChange={(e) => setFiltroModelo(e.target.value)}
+              />
+            </div>
+            <div className="col-md-4">
+              <input
+                className="form-control"
+                type="number"
+                placeholder="Filtrar por ano de fabricação"
+                value={filtroAno}
+                onChange={(e) => setFiltroAno(e.target.value)}
+              />
+            </div>
+            <div className="col-md-3 d-flex gap-2">
+              <button className="btn btn-primary w-100" onClick={() => carregarVeiculos()}>Pesquisar</button>
+              <button className="btn btn-secondary w-100" onClick={limparFiltros}>Limpar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card mb-4">
+        <div className="card-body">
+          <h5 className="card-title">{editando ? "Editar veículo" : "Cadastrar veículo"}</h5>
+          <form onSubmit={salvarVeiculo}>
+            <div className="row g-2">
+              <div className="col-md-3">
+                <input
+                  className="form-control"
+                  name="modelo"
+                  placeholder="Modelo"
+                  value={formulario.modelo}
+                  onChange={atualizarCampo}
+                  required
+                />
+              </div>
+              <div className="col-md-2">
+                <input
+                  className="form-control"
+                  type="number"
+                  name="anoFabricacao"
+                  placeholder="Ano"
+                  value={formulario.anoFabricacao}
+                  onChange={atualizarCampo}
+                  required
+                />
+              </div>
+              <div className="col-md-2">
+                <input
+                  className="form-control"
+                  type="number"
+                  name="quilometragem"
+                  placeholder="Km"
+                  value={formulario.quilometragem}
+                  onChange={atualizarCampo}
+                  required
+                />
+              </div>
+              <div className="col-md-2">
+                <select
+                  className="form-select"
+                  name="fabricanteId"
+                  value={formulario.fabricanteId}
+                  onChange={atualizarCampo}
+                  required
+                >
+                  <option value="">Fabricante</option>
+                  {fabricantes.map((f) => (
+                    <option key={f.id} value={f.id}>{f.nome}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-md-2">
+                <select
+                  className="form-select"
+                  name="categoriaId"
+                  value={formulario.categoriaId}
+                  onChange={atualizarCampo}
+                  required
+                >
+                  <option value="">Categoria</option>
+                  {categorias.map((c) => (
+                    <option key={c.id} value={c.id}>{c.nome}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-md-1 d-flex gap-2 flex-column">
+                <button className="btn btn-success" type="submit">{editando ? "Salvar" : "Cadastrar"}</button>
+                {editando && (
+                  <button className="btn btn-outline-secondary" type="button" onClick={limparFormulario}>Cancelar</button>
+                )}
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div className="table-responsive">
+        <table className="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Modelo</th>
+              <th>Ano</th>
+              <th>Km</th>
+              <th>Fabricante</th>
+              <th>Categoria</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {veiculos.map((veiculo) => (
+              <tr key={veiculo.id}>
+                <td>{veiculo.id}</td>
+                <td>{veiculo.modelo}</td>
+                <td>{veiculo.anoFabricacao}</td>
+                <td>{veiculo.quilometragem}</td>
+                <td>{veiculo.fabricante?.nome || veiculo.fabricanteId}</td>
+                <td>{veiculo.categoria?.nome || veiculo.categoriaId}</td>
+                <td>
+                  <button className="btn btn-sm btn-warning me-2" onClick={() => editarVeiculo(veiculo)}>Editar</button>
+                  <button className="btn btn-sm btn-danger" onClick={() => excluirVeiculo(veiculo.id)}>Excluir</button>
+                </td>
+              </tr>
+            ))}
+            {veiculos.length === 0 && (
+              <tr>
+                <td colSpan="7" className="text-center">Nenhum veículo encontrado.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

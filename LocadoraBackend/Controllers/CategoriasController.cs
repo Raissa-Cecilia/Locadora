@@ -17,15 +17,29 @@ namespace LocadoraBackend.Controllers
         }
 
         /// <summary>
-        /// Retorna todas as categorias cadastradas (ex: SUV, Sedan, Hatch).
+        /// Retorna as categorias cadastradas, com filtros opcionais por nome e ID.
         /// </summary>
+        /// <param name="nome">Filtro por nome da categoria</param>
+        /// <param name="id">Filtro por ID da categoria</param>
         /// <returns>Lista de categorias</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categoria>>> GetCategorias()
+        public async Task<ActionResult<IEnumerable<Categoria>>> GetCategorias([FromQuery] string? nome, [FromQuery] int? id)
         {
             try
             {
-                return await _context.Categorias.ToListAsync();
+                var consulta = _context.Categorias.AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(nome))
+                {
+                    consulta = consulta.Where(c => c.Nome.Contains(nome));
+                }
+
+                if (id.HasValue)
+                {
+                    consulta = consulta.Where(c => c.Id == id.Value);
+                }
+
+                return await consulta.ToListAsync();
             }
             catch (Exception ex)
             {

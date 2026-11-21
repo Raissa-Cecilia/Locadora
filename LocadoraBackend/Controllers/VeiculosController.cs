@@ -1,4 +1,4 @@
-using LocadoraBackend.Data;
+﻿using LocadoraBackend.Data;
 using LocadoraBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,18 +17,32 @@ namespace LocadoraBackend.Controllers
         }
 
         /// <summary>
-        /// Retorna todos os veículos cadastrados, incluindo Fabricante e Categoria.
+        /// Retorna os veículos cadastrados, com filtros opcionais por modelo e ano de fabricação.
         /// </summary>
+        /// <param name="modelo">Filtro por modelo do veículo</param>
+        /// <param name="anoFabricacao">Filtro por ano de fabricação</param>
         /// <returns>Lista de veículos</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Veiculo>>> GetVeiculos()
+        public async Task<ActionResult<IEnumerable<Veiculo>>> GetVeiculos([FromQuery] string? modelo, [FromQuery] int? anoFabricacao)
         {
             try
             {
-                return await _context.Veiculos
+                var consulta = _context.Veiculos
                     .Include(v => v.Fabricante)
                     .Include(v => v.Categoria)
-                    .ToListAsync();
+                    .AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(modelo))
+                {
+                    consulta = consulta.Where(v => v.Modelo.Contains(modelo));
+                }
+
+                if (anoFabricacao.HasValue)
+                {
+                    consulta = consulta.Where(v => v.AnoFabricacao == anoFabricacao.Value);
+                }
+
+                return await consulta.ToListAsync();
             }
             catch (Exception ex) { return StatusCode(500, $"Erro interno: {ex.Message}"); }
         }
