@@ -1,4 +1,4 @@
-﻿export const urlApi = "https://localhost:7181/api";
+﻿export const urlApi = "http://localhost:5000/api";
 
 export async function apiGet(caminho) {
   const resposta = await fetch(`${urlApi}${caminho}`);
