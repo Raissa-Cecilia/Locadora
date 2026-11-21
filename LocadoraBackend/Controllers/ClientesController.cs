@@ -17,13 +17,30 @@ namespace LocadoraBackend.Controllers
         }
 
         /// <summary>
-        /// Lista todos os clientes cadastrados.
+        /// Lista os clientes cadastrados, com filtros opcionais por nome e CPF.
         /// </summary>
+        /// <param name="nome">Filtro por nome do cliente</param>
+        /// <param name="cpf">Filtro por CPF do cliente</param>
         /// <returns>Lista de clientes</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
+        public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes([FromQuery] string? nome, [FromQuery] string? cpf)
         {
-            try { return await _context.Clientes.ToListAsync(); }
+            try
+            {
+                var consulta = _context.Clientes.AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(nome))
+                {
+                    consulta = consulta.Where(c => c.Nome.Contains(nome));
+                }
+
+                if (!string.IsNullOrWhiteSpace(cpf))
+                {
+                    consulta = consulta.Where(c => c.Cpf.Contains(cpf));
+                }
+
+                return await consulta.ToListAsync();
+            }
             catch (Exception ex) { return StatusCode(500, $"Erro interno: {ex.Message}"); }
         }
 

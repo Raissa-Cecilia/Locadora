@@ -18,13 +18,30 @@ namespace LocadoraBackend.Controllers
         }
 
         /// <summary>
-        /// Lista todos os fabricantes cadastrados.
+        /// Lista os fabricantes cadastrados, com filtros opcionais por nome e ID.
         /// </summary>
+        /// <param name="nome">Filtro por nome do fabricante</param>
+        /// <param name="id">Filtro por ID do fabricante</param>
         /// <returns>Lista de fabricantes</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Fabricante>>> GetFabricantes()
+        public async Task<ActionResult<IEnumerable<Fabricante>>> GetFabricantes([FromQuery] string? nome, [FromQuery] int? id)
         {
-            try { return await _context.Fabricantes.ToListAsync(); }
+            try
+            {
+                var consulta = _context.Fabricantes.AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(nome))
+                {
+                    consulta = consulta.Where(f => f.Nome.Contains(nome));
+                }
+
+                if (id.HasValue)
+                {
+                    consulta = consulta.Where(f => f.Id == id.Value);
+                }
+
+                return await consulta.ToListAsync();
+            }
             catch (Exception ex) { return StatusCode(500, $"Erro interno: {ex.Message}"); }
         }
 
