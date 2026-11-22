@@ -1,0 +1,83 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
+
+\geometry{margin=2.5cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\title{Sistema de Locadora de Veículos\\
+\large Descrição do Problema e Artefatos Criados}
+\author{Raissa Matos\\PUC Minas}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Problema}
+Uma locadora de veículos de pequeno porte precisa organizar o controle de clientes, veículos e aluguéis, que atualmente é realizado de forma manual. Esse processo dificulta a consulta de informações, o registro de devoluções, o acompanhamento de valores e a visualização de relatórios para apoiar a gestão do negócio.
+
+\section{Solução proposta}
+Foi proposto o desenvolvimento de um sistema web, composto por uma API e um front-end, para gerenciar cadastros, aluguéis e consultas da locadora. O sistema permite registrar e consultar informações de forma centralizada, além de oferecer relatórios e funcionalidades de carteira (saldo, recarga e pagamento).
+
+\section{Objetivos}
+\begin{itemize}[leftmargin=*]
+    \item Facilitar o cadastro, edição, exclusão e consulta das entidades principais.
+    \item Registrar aluguéis e devoluções, com acompanhamento do valor total.
+    \item Disponibilizar relatórios e visualizações com base nas consultas do banco de dados.
+    \item Apoiar o controle financeiro com consulta de saldo, recarga e pagamento de aluguéis.
+\end{itemize}
+
+\section{Artefatos criados}
+
+\subsection{Documentação}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Problema e contexto} (\texttt{docs/Problema.md}): descrição do problema, solução, objetivos, entidades, dados fictícios previstos e telas planejadas (wireframes).
+    \item \textbf{Documento em LaTeX} (\texttt{docs/documentacao.tex}): apresentação simples e objetiva do problema e dos artefatos desenvolvidos.
+\end{itemize}
+
+\subsection{Backend (API e banco de dados)}
+Desenvolvido em \textbf{ASP.NET Core (.NET 8)} com \textbf{Entity Framework Core} e banco de dados \textbf{SQL Server}.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Modelos/entidades}: Cliente, Fabricante, Categoria, Veículo e Aluguel, com relacionamentos entre as entidades.
+    \item \textbf{Rotas de cadastro (CRUD)}: controladores para Clientes, Fabricantes, Categorias, Veículos e Aluguéis, com filtros de pesquisa (pelo menos dois campos por entidade), por exemplo: nome/CPF (clientes), nome/ID (fabricantes e categorias), modelo/ano de fabricação (veículos) e cliente/situação (aluguéis).
+    \item \textbf{Rotas de relatórios/consultas}: veículos com fabricantes, aluguéis por cliente, clientes com e sem aluguéis, quantidade de veículos por fabricante e aluguéis em aberto.
+    \item \textbf{Carteira no banco de dados}: campos de saldo do cliente e de pagamento do aluguel, além de rotas para consulta de saldo, recarga e pagamento de aluguéis.
+    \item \textbf{Migrations}: criação e atualização da estrutura do banco de dados, incluindo a migration de saldo e pagamento da carteira.
+    \item \textbf{Configuração de integração}: habilitação de CORS para permitir o consumo da API pelo front-end.
+\end{itemize}
+
+\subsection{Front-end (telas e funcionalidades)}
+Desenvolvido em \textbf{React} (Vite) com \textbf{Bootstrap} e \textbf{React Router}, consumindo as rotas da API.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Layout e navegação}: barra de menu, páginas organizadas por entidade/funcionalidade e rodapé com identificação do projeto (Raissa Matos -- PUC Minas).
+    \item \textbf{Tela Início}: apresentação do problema, solução e dados fictícios (clientes, veículos, fabricantes, categorias e aluguéis).
+    \item \textbf{Telas de cadastro e pesquisa}: Clientes, Fabricantes, Categorias e Veículos, com listagem, cadastro, edição, exclusão e pesquisa com filtros.
+    \item \textbf{Tela de Aluguéis}: registro de aluguel, registro de devolução, exclusão, pesquisa por filtros e visualização da situação/pagamento.
+    \item \textbf{Tela de Carteira}: consulta de saldo, recarga e pagamento de aluguéis utilizando os dados do banco.
+    \item \textbf{Tela de Relatórios}: visualização das consultas do banco de dados (relatórios da API), com indicadores e tabelas.
+    \item \textbf{Dados fictícios}: arquivo de exemplos utilizado nas visualizações do front-end para demonstrar o funcionamento do sistema.
+\end{itemize}
+
+\subsection{Funcionalidades atendidas}
+\begin{itemize}[leftmargin=*]
+    \item Integração do front-end com os artefatos e rotas do backend.
+    \item Operações de cadastro, edição, exclusão e pesquisa com filtros personalizados nas entidades.
+    \item Consultas e relatórios baseados no banco de dados.
+    \item Funcionalidades de recarga, consulta de saldo e pagamento de aluguéis.
+\end{itemize}
+
+\section{Considerações finais}
+Os artefatos produzidos permitem organizar o processo de locação de veículos de forma mais clara e acessível, facilitando o controle das informações, o acompanhamento dos aluguéis e a consulta de relatórios, em comparação ao controle manual descrito no problema.
+
+\end{document}
