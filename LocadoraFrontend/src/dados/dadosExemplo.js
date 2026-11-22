@@ -33,5 +33,7 @@ export const veiculosExemplo = [
 export const alugueisExemplo = [
   { id: 1, cliente: "Ana Souza", veiculo: "Uno", dataInicio: "2026-11-10", dataDevolucao: null, valorDiaria: 120, valorTotal: null, situacao: "Em aberto" },
   { id: 2, cliente: "Bruno Lima", veiculo: "Onix", dataInicio: "2026-11-12", dataDevolucao: "2026-11-14", valorDiaria: 130, valorTotal: 260, situacao: "Finalizado" },
-  { id: 3, cliente: "Ana Souza", veiculo: "Corolla", dataInicio: "2026-11-15", dataDevolucao: "2026-11-18", valorDiaria: 180, valorTotal: 540, situacao: "Finalizado" }
+  { id: 3, cliente: "Ana Souza", veiculo: "Corolla", dataInicio: "2026-11-15", dataDevolucao: "2026-11-18", valorDiaria: 180, valorTotal: 540, situacao: "Finalizado" },
+  { id: 4, cliente: "Bruno Lima", veiculo: "Civic", dataInicio: "2026-11-20", dataDevolucao: null, valorDiaria: 170, valorTotal: null, situacao: "Em aberto" },
+  { id: 5, cliente: "Ana Souza", veiculo: "Creta", dataInicio: "2026-11-05", dataDevolucao: "2026-11-08", valorDiaria: 210, valorTotal: 630, situacao: "Finalizado" }
 ];
